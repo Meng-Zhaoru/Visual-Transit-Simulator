@@ -30,4 +30,4 @@ Establish your own additional team policies around the following aspects:
 1. Each member in my team should understand the distribution of work and finished the work before the deadline.
 ## Team Member Names
 **Step 3: Please enter your name. Each one of the team members should add the name through a different commit. For example, student A adds their name and commits, then student B adds their name and commits.**
-Rui Wang,    Liu Ke,  Zhaoru Meng
+Rui Wang,    Ke Liu,  Zhaoru Meng
