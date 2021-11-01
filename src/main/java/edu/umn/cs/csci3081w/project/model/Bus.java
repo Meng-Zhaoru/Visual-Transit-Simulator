@@ -6,8 +6,7 @@ public class Bus extends Vehicle {
   public static final String BUS_VEHICLE = "BUS_VEHICLE";
   public static final double SPEED = 0.5;
   public static final int CAPACITY = 60;
-  private Route outboundRoute;
-  private Route inboundRoute;
+  private Line line;
   private double distanceRemaining;
   private Stop nextStop;
 
@@ -15,18 +14,16 @@ public class Bus extends Vehicle {
    * Constructor for a bus.
    *
    * @param id       bus identifier
-   * @param out      outbound route
-   * @param in       inbound route
+   * @param line     bus line
    * @param capacity capacity of bus
    * @param speed    speed of bus
    */
-  public Bus(int id, Route out, Route in, int capacity, double speed) {
+  public Bus(int id, Line line, int capacity, double speed) {
     super(id, capacity, speed, new PassengerLoader(), new PassengerUnloader());
-    this.outboundRoute = out;
-    this.inboundRoute = in;
+    this.line = line;
     this.distanceRemaining = 0;
-    this.nextStop = out.getDestinationStop();
-    setName(out.getName() + id);
+    this.nextStop = line.getOutboundRoute().getNextStop();
+    setName(line.getOutboundRoute().getName() + id);
     setPosition(new Position(nextStop.getPosition().getLongitude(),
         nextStop.getPosition().getLatitude()));
   }
@@ -54,7 +51,7 @@ public class Bus extends Vehicle {
   }
 
   public boolean isTripComplete() {
-    return outboundRoute.isAtEnd() && inboundRoute.isAtEnd();
+    return line.getOutboundRoute().isAtEnd() && line.getInboundRoute().isAtEnd();
   }
 
   public int loadPassenger(Passenger newPassenger) {
@@ -85,15 +82,15 @@ public class Bus extends Vehicle {
     }
 
     // Get the correct route and early exit
-    Route currentRoute = outboundRoute;
-    if (outboundRoute.isAtEnd()) {
-      if (inboundRoute.isAtEnd()) {
+    Route currentRoute = line.getOutboundRoute();
+    if (line.getOutboundRoute().isAtEnd()) {
+      if (line.getInboundRoute().isAtEnd()) {
         return;
       }
-      currentRoute = inboundRoute;
+      currentRoute = line.getInboundRoute();
     }
     Stop prevStop = currentRoute.prevStop();
-    Stop nextStop = currentRoute.getDestinationStop();
+    Stop nextStop = currentRoute.getNextStop();
     double distanceBetween = currentRoute.getNextStopDistance();
     // the ratio shows us how far from the previous stop are we in a ratio from 0 to 1
     double ratio;
@@ -149,7 +146,7 @@ public class Bus extends Vehicle {
     if (!isTripComplete()) {
       // it's important we call currentRoute() again,
       // as nextStop() may have caused it to change.
-      nextStop = currentRoute().getDestinationStop();
+      nextStop = currentRoute().getNextStop();
       distanceRemaining +=
           currentRoute().getNextStopDistance();
       // note, if distanceRemaining was negative because we
@@ -174,12 +171,20 @@ public class Bus extends Vehicle {
     return getSpeed();
   }
 
+  public Line getLine() {
+    return line;
+  }
+
+  public double getDistanceRemaining() {
+    return distanceRemaining;
+  }
+
   private Route currentRoute() {
     // Figure out if we're on the outgoing or incoming route
-    if (!outboundRoute.isAtEnd()) {
-      return outboundRoute;
+    if (!line.getOutboundRoute().isAtEnd()) {
+      return line.getOutboundRoute();
     }
-    return inboundRoute;
+    return line.getInboundRoute();
   }
 
   public Stop getNextStop() {
