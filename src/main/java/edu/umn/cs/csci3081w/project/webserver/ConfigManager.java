@@ -35,9 +35,11 @@ public class ConfigManager {
   public void readConfig(Counter counter, String fileName) {
     File configFile = FileUtils.getFile(fileName);
     try {
+      boolean isSameName = false;
       String currLineName = "";
       String currLineType = "";
       String currRouteName = "";
+      List<String> stopName = new ArrayList<>();
       List<Stop> stops = new ArrayList<Stop>();
       List<Double> probabilities = new ArrayList<Double>();
       Scanner scanner = new Scanner(configFile);
@@ -86,12 +88,24 @@ public class ConfigManager {
           }
         } else if (chunk.equals("STOP")) {
           String currStopName = splits[1].trim();
-          double currStopLatitude = Double.valueOf(splits[2].trim());
-          double currStopLongitude = Double.valueOf(splits[3].trim());
-          double probability = Double.valueOf(splits[4].trim());
-          probabilities.add(probability);
-          stops.add(new Stop(counter.getStopIdCounterAndIncrement(), currStopName,
-              new Position(currStopLongitude, currStopLatitude)));
+
+          for (int i = 0; i < stopName.size(); i++) {
+            if (currStopName.equals(stopName.get(i))) {
+              isSameName = true;
+              break;
+            } else {
+              isSameName = false;
+            }
+          }
+          if (!isSameName) {
+            double currStopLatitude = Double.valueOf(splits[2].trim());
+            double currStopLongitude = Double.valueOf(splits[3].trim());
+            double probability = Double.valueOf(splits[4].trim());
+            probabilities.add(probability);
+            stops.add(new Stop(counter.getStopIdCounterAndIncrement(), currStopName,
+                new Position(currStopLongitude, currStopLatitude)));
+          }
+          stopName.add(currStopName);
         }
       }
       scanner.close();
