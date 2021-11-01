@@ -66,10 +66,6 @@ public class VisualTransitSimulator {
    * Updates the simulation at each step.
    */
   public void update() {
-    System.out.println(routes.get(0).getStops().size());
-    for (int i = 0; i < routes.get(0).getStops().size(); i++) {
-      System.out.println(routes.get(0).getStops().get(i).getName());
-    }
     simulationTimeElapsed++;
     if (simulationTimeElapsed > numTimeSteps) {
       return;
