@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import edu.umn.cs.csci3081w.project.model.Bus;
 import edu.umn.cs.csci3081w.project.model.Train;
 import edu.umn.cs.csci3081w.project.model.Vehicle;
+
 import java.util.List;
 
 public class GetVehiclesCommand extends SimulatorCommand {
@@ -34,13 +35,16 @@ public class GetVehiclesCommand extends SimulatorCommand {
       s.addProperty("numPassengers", currVehicle.getPassengers().size());
       s.addProperty("capacity", currVehicle.getCapacity());
       String vehicleType = "";
+      int co2Units = 0; //initialize a co2 unit.
       if (currVehicle instanceof Bus) {
         vehicleType = Bus.BUS_VEHICLE;
+        co2Units = 1 * currVehicle.getPassengers().size() + 2;
       } else if (currVehicle instanceof Train) {
         vehicleType = Train.TRAIN_VEHICLE;
+        co2Units = 2 * currVehicle.getPassengers().size() + 5;
       }
       s.addProperty("type", vehicleType);
-      s.addProperty("co2", 0);
+      s.addProperty("co2", co2Units);
       JsonObject jsonObject = new JsonObject();
       jsonObject.addProperty("longitude", currVehicle.getPosition().getLongitude());
       jsonObject.addProperty("latitude", currVehicle.getPosition().getLatitude());
