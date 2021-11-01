@@ -5,6 +5,7 @@ import edu.umn.cs.csci3081w.project.model.Position;
 import edu.umn.cs.csci3081w.project.model.RandomPassengerGenerator;
 import edu.umn.cs.csci3081w.project.model.Route;
 import edu.umn.cs.csci3081w.project.model.Stop;
+import edu.umn.cs.csci3081w.project.model.StorageFacility;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,9 @@ public class ConfigManager {
   private static final String ROUTE_END = "ROUTE_END";
   private static final String BUS_LINE = "BUS_LINE";
   private static final String TRAIN_LINE = "TRAIN_LINE";
+  private static final String STORAGE_FACILITY_START = "STORAGE_FACILITY_START";
+  private static final String STORAGE_FACILITY_END = "STORAGE_FACILITY_END";
+  private StorageFacility storageFacility;
 
   private List<Route> routes = new ArrayList<Route>();
 
@@ -39,6 +43,8 @@ public class ConfigManager {
       String currLineName = "";
       String currLineType = "";
       String currRouteName = "";
+      int busesNum = 0;
+      int trainsNum = 0;
       List<String> stopName = new ArrayList<>();
       List<Stop> stops = new ArrayList<Stop>();
       List<Double> probabilities = new ArrayList<Double>();
@@ -84,6 +90,7 @@ public class ConfigManager {
                     new RandomPassengerGenerator(stops, probabilities)));
             currRouteName = "";
             stops.clear();
+            stopName.clear();
             probabilities.clear();
           }
         } else if (chunk.equals("STOP")) {
@@ -106,6 +113,12 @@ public class ConfigManager {
                 new Position(currStopLongitude, currStopLatitude)));
           }
           stopName.add(currStopName);
+        } else if (chunk.equals("BUSES")) {
+          busesNum = Integer.valueOf(splits[1].trim());
+        } else if (chunk.equals("TRAINS")) {
+          trainsNum = Integer.valueOf(splits[1].trim());
+        } else if (chunk.equals(STORAGE_FACILITY_END)) {
+          storageFacility = new StorageFacility(busesNum, trainsNum);
         }
       }
       scanner.close();
@@ -116,5 +129,9 @@ public class ConfigManager {
 
   public List<Route> getRoutes() {
     return routes;
+  }
+
+  public StorageFacility getStorageFacility() {
+    return storageFacility;
   }
 }
