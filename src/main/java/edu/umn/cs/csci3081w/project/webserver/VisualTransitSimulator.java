@@ -1,7 +1,11 @@
 package edu.umn.cs.csci3081w.project.webserver;
 
-import edu.umn.cs.csci3081w.project.model.*;
-
+import edu.umn.cs.csci3081w.project.model.Bus;
+import edu.umn.cs.csci3081w.project.model.Counter;
+import edu.umn.cs.csci3081w.project.model.Line;
+import edu.umn.cs.csci3081w.project.model.Route;
+import edu.umn.cs.csci3081w.project.model.Train;
+import edu.umn.cs.csci3081w.project.model.Vehicle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +20,8 @@ public class VisualTransitSimulator {
   private List<Vehicle> completedTripVehicles;
   private List<Integer> vehicleStartTimings;
   private List<Integer> timeSinceLastVehicle;
+  private int busesNum;
+  private int trainsNum;
 
   /**
    * Constructor for Simulation.
@@ -27,6 +33,8 @@ public class VisualTransitSimulator {
     ConfigManager configManager = new ConfigManager();
     configManager.readConfig(counter, configFile);
     this.routes = configManager.getRoutes();
+    this.busesNum = configManager.getStorageFacility().getBusesNum();
+    this.trainsNum = configManager.getStorageFacility().getTrainsNum();
     this.activeVehicles = new ArrayList<Vehicle>();
     this.completedTripVehicles = new ArrayList<Vehicle>();
     this.vehicleStartTimings = new ArrayList<Integer>();
@@ -58,6 +66,10 @@ public class VisualTransitSimulator {
    * Updates the simulation at each step.
    */
   public void update() {
+    System.out.println(routes.get(0).getStops().size());
+    for (int i = 0; i < routes.get(0).getStops().size(); i++) {
+      System.out.println(routes.get(0).getStops().get(i).getName());
+    }
     simulationTimeElapsed++;
     if (simulationTimeElapsed > numTimeSteps) {
       return;
@@ -66,20 +78,28 @@ public class VisualTransitSimulator {
         + simulationTimeElapsed + "~~~~");
     // generate vehicles
     for (int i = 0; i < timeSinceLastVehicle.size(); i++) {
+      System.out.println(timeSinceLastVehicle);
       if (timeSinceLastVehicle.get(i) <= 0) {
         Route outbound = routes.get(2 * i);
         Route inbound = routes.get(2 * i + 1);
         Line line = new Line(outbound.shallowCopy(), inbound.shallowCopy());
         if (outbound.getLineType().equals(Route.BUS_LINE)
             && inbound.getLineType().equals(Route.BUS_LINE)) {
-          activeVehicles
-              .add(new Bus(counter.getBusIdCounterAndIncrement(), line, Bus.CAPACITY, Bus.SPEED));
+          if (busesNum > 0) {
+            activeVehicles
+                .add(new Bus(counter.getBusIdCounterAndIncrement(), line, Bus.CAPACITY, Bus.SPEED));
+            busesNum--;
+          }
           timeSinceLastVehicle.set(i, vehicleStartTimings.get(i));
           timeSinceLastVehicle.set(i, timeSinceLastVehicle.get(i) - 1);
         } else if (outbound.getLineType().equals(Route.TRAIN_LINE)
             && inbound.getLineType().equals(Route.TRAIN_LINE)) {
-          activeVehicles
-              .add(new Train(counter.getTrainIdCounterAndIncrement(), line, Train.CAPACITY, Train.SPEED));
+          if (trainsNum > 0) {
+            activeVehicles
+                .add(new Train(counter.getTrainIdCounterAndIncrement(),
+                    line, Train.CAPACITY, Train.SPEED));
+            trainsNum--;
+          }
           timeSinceLastVehicle.set(i, vehicleStartTimings.get(i));
           timeSinceLastVehicle.set(i, timeSinceLastVehicle.get(i) - 1);
         }
@@ -94,6 +114,12 @@ public class VisualTransitSimulator {
       if (currVehicle.isTripComplete()) {
         Vehicle completedTripVehicle = activeVehicles.remove(i);
         completedTripVehicles.add(completedTripVehicle);
+        if (completedTripVehicle.getId() >= 1000 && completedTripVehicle.getId() < 2000) {
+          busesNum++;
+        }
+        if (completedTripVehicle.getId() >= 2000) {
+          trainsNum++;
+        }
       } else {
         if (VisualTransitSimulator.LOGGING) {
           currVehicle.report(System.out);
