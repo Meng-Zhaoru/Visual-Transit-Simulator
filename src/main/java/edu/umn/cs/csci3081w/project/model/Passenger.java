@@ -22,6 +22,14 @@ public class Passenger {
     this.timeOnVehicle = 0;
   }
 
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
   /**
    * Updates time variables for passenger.
    */
@@ -59,4 +67,11 @@ public class Passenger {
     out.println("####Passenger Info End####");
   }
 
+  public int getWaitAtStop() {
+    return waitAtStop;
+  }
+
+  public int getTimeOnVehicle() {
+    return timeOnVehicle;
+  }
 }

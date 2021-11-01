@@ -18,10 +18,11 @@ public class Route {
   private Stop nextStop;
   private PassengerGenerator generator;
 
+
   /**
    * Route constructor.
    *
-   * @param id  identifier for route
+   * @param id        identifier for route
    * @param lineName  name of the line
    * @param lineType  line type
    * @param name      name of route
@@ -193,5 +194,32 @@ public class Route {
 
   public String getLineType() {
     return lineType;
+  }
+
+  public List<Double> getDistances() {
+    return distances;
+  }
+
+  /**
+   * Check if two Route objects are same.
+   *
+   * @param route the route to be checked
+   * @return <code>true</code> if all the attributes of two objects are same,
+   *  <code>false</code> otherwise
+   */
+  public boolean equals(Route route) {
+    boolean stopsResult = true;
+    boolean distancesResult = true;
+    for (int i = 0; i < this.stops.size(); i++) {
+      stopsResult = stopsResult && (this.stops.get(i).equals(route.getStops().get(i)));
+    }
+    for (int i = 0; i < this.distances.size(); i++) {
+      distancesResult = distancesResult
+          && (this.distances.get(i).equals(route.getDistances().get(i)));
+    }
+    return (this.id == route.getId()) && (this.lineName == route.getLineName())
+        && (this.lineType == route.getLineType()) && (this.name == route.getName())
+        && (stopsResult) && (distancesResult)
+        && (this.generateNewPassengers() == route.generateNewPassengers());
   }
 }

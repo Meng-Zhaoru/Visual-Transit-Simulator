@@ -4,6 +4,7 @@ ROUTE_START, East Bound
 
 STOP, Blegen Hall, 44.972392, -93.243774, .15
 STOP, Coffman, 44.973580, -93.235071, .3
+STOP, Coffman, 50, -80, .3
 STOP, Oak Street at University Avenue, 44.975392, -93.226632, .025
 STOP, Transitway at 23rd Avenue SE, 44.975837, -93.222174, .05
 STOP, Transitway at Commonwealth Avenue, 44.980753, -93.180669, .05

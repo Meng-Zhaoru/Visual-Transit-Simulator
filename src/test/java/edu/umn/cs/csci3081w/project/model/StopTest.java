@@ -198,6 +198,18 @@ public class StopTest {
   }
 
   /**
+   * Testing state of passenger after updating stop.
+   */
+  @Test
+  public void testUpdate() {
+    Passenger passenger = new Passenger(1, "Goldy");
+    Stop stop = new Stop(0, "test stop", new Position(-93.243774, 44.972392));
+    stop.addPassengers(passenger);
+    stop.update();
+    assertEquals(1, passenger.getWaitAtStop());
+  }
+
+  /**
    * Testing reporting functionality with passenger.
    */
   @Test

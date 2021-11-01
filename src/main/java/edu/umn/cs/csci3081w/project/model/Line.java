@@ -1,7 +1,5 @@
 package edu.umn.cs.csci3081w.project.model;
 
-import java.util.List;
-
 public class Line {
   private Route outboundRoute;
   private Route inboundRoute;

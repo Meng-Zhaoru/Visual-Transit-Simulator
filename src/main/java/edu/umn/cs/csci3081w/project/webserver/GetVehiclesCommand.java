@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import edu.umn.cs.csci3081w.project.model.Bus;
 import edu.umn.cs.csci3081w.project.model.Train;
 import edu.umn.cs.csci3081w.project.model.Vehicle;
-
 import java.util.List;
 
 public class GetVehiclesCommand extends SimulatorCommand {

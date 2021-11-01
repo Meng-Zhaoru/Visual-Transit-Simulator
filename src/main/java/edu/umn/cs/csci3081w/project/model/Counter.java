@@ -27,4 +27,11 @@ public class Counter {
     return trainIdCounter++;
   }
 
+  public void setBusIdCounter(int busIdCounter) {
+    this.busIdCounter = busIdCounter;
+  }
+
+  public void setTrainIdCounter(int trainIdCounter) {
+    this.trainIdCounter = trainIdCounter;
+  }
 }
